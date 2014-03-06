@@ -19,7 +19,7 @@ func main() {
 	// decode string ssh-rsa format to native type
 	pub_key, err := ssh.DecodePublicKey(string(bytes))
 	if err != nil { fmt.Printf("%v\n", err); os.Exit(1) }
-	// pub_key is of type *rsa.PublicKey
+	// pub_key is of type *rsa.PublicKey from 'crypto/rsa'
 
 	// Marshal to ASN.1 DER encoding
 	pkix, err := x509.MarshalPKIXPublicKey(pub_key)

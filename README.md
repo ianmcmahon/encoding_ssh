@@ -9,9 +9,9 @@ From the native structures such as `rsa.PublicKey`, it's fairly simple to use th
 ## Usage
 
 ```go
-	import "github.com/ianmcmahon/encoding_ssh"
+import "github.com/ianmcmahon/encoding_ssh"
 
-	pub_key, err := ssh.DecodePublicKey(string(bytes))
+pub_key, err := ssh.DecodePublicKey(string(bytes))
 ```
 
 Here's a short program which reads $HOME/.ssh/id_rsa.pub and outputs the public key in PKCS8 format.  This is equivalent to:
@@ -53,5 +53,45 @@ func main() {
 		}))
 
 	fmt.Printf("%s", pem)
+}
+```
+
+
+Here is another short program which reads $HOME/.ssh/id_rsa and outputs the public key in ssh-rsa one-line format.  This is equivalent to:
+
+	ssh-keygen -y -f ~/.ssh/id_rsa
+
+```go
+package main
+
+import (
+	"github.com/ianmcmahon/encoding_ssh"
+
+	"os"
+	"fmt"
+	"io/ioutil"
+	"crypto/x509"
+	"encoding/pem"
+)
+
+func main() {
+
+	// read in private key from file (private key is PEM encoded PKCS)
+	bytes, err := ioutil.ReadFile(os.Getenv("HOME") + "/.ssh/id_rsa")
+	if err != nil { fmt.Printf("%v\n", err); os.Exit(1) }
+
+	// decode PEM encoding to ANS.1 PKCS1 DER
+	block, _ := pem.Decode(bytes)
+	if block == nil { fmt.Printf("No Block found in keyfile\n"); os.Exit(1) }
+	if block.Type != "RSA PRIVATE KEY" { fmt.Printf("Unsupported key type"); os.Exit(1) }
+
+	// parse DER format to a native type
+	key, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+
+	// encode the public key portion of the native key into ssh-rsa format
+	// second parameter is the optional "comment" at the end of the string (usually 'user@host')
+	ssh_rsa, err := ssh.EncodePublicKey(key.PublicKey, "")
+
+	fmt.Printf("%s\n", ssh_rsa)
 }
 ```
