@@ -8,10 +8,10 @@ From the native structures such as `rsa.PublicKey`, it's fairly simple to use th
 
 ## Usage
 
-`
+```go
 package main
 
 import (
 	
 )
-`
+```
