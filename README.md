@@ -9,9 +9,13 @@ From the native structures such as `rsa.PublicKey`, it's fairly simple to use th
 ## Usage
 
 ```go
+
 import "github.com/ianmcmahon/encoding_ssh"
 
 pub_key, err := ssh.DecodePublicKey(string(bytes))
+
+ssh_rsa_string, err := ssh.EncodePublicKey(user_key.PublicKey(), "user@host")
+
 ```
 
 Here's a short program which reads $HOME/.ssh/id_rsa.pub and outputs the public key in PKCS8 format.  This is equivalent to:
