@@ -8,10 +8,6 @@ import (
 	"encoding/base64"
 	"crypto/rsa"
 	"math/big"
-	/*
-	"crypto/x509"
-	"encoding/pem"
-	*/
 )
 
 // ssh one-line format (for lack of a better term) consists of three text fields: { key_type, data, comment }
@@ -21,7 +17,6 @@ import (
 func EncodePublicKey(key interface{}, comment string) (string, error) {
 	if rsaKey, ok := key.(rsa.PublicKey); ok {
 		key_type := "ssh-rsa"
-		fmt.Printf("in encode: %s with %T\n", key_type, rsaKey)
 
 		modulus_bytes := rsaKey.N.Bytes()
 
